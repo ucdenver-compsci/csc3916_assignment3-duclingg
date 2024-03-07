@@ -91,19 +91,12 @@ router.route('/movies')
     .get(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
 
-        const { title } = req.query;
-        let query = {};
-
-        if (title) {
-            query.title = title;
-        }
-
-        Movie.find(query).select("title releaseDate genre actors").exec(function (err, movies) {
+        Movie.find({}, function(err, movies) {
             if (err) {
-                return res.status(500).json({ success: false, message: 'Unable to find passed in title.'});
-            } else {
-                return res.status(200).json(movies);
+                return res.status(500).send({success: false, message: 'Internal server error.'});
             }
+
+            res.status(200).json({success: true, movies: movies});
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
