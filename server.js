@@ -91,7 +91,7 @@ router.route('/movies')
     .get(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
 
-        Movie.find({}, function(err, movies) {
+        Movie.find({}, 'title releaseDate genre actors', function(err, movies) {
             if (err) {
                 return res.status(500).send({success: false, message: 'Internal server error.'});
             }
