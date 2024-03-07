@@ -143,16 +143,20 @@ router.route('/movies')
         }
     })
     .get(authJwtController.isAuthenticated, function (req, res) {
-        Movie.find({}, "title year_released genre actors").exec(function (err, movie) {
-            if (err) {
-                return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
-            }
-            if (movie && movie.length > 0) {
-                return res.status(200).json({success: true, message: "Successfully retrieved movie.", movie: movie});
-            } else {
-                return res.status(404).json({success: false, message: "Unable to retrieve a match for title passed in."});
-            }
-        })
+        if (!req.body.find_title) {
+            return res.json({ success: false, message: "Please provide a title to be retrieved." });
+        } else {
+            Movie.find( req.body.find_title).select("title year_released genre actors").exec(function (err, movie) {
+                if (err) {
+                    return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
+                }
+                if (movie && movie.length > 0) {
+                    return res.status(200).json({success: true, message: "Successfully retrieved movie.", movie: movie});
+                } else {
+                    return res.status(404).json({success: false, message: "Unable to retrieve a match for title passed in."});
+                }
+            })
+        }
     })
     .all(function(req, res) {
         return res.status(403).json({success: false, message: "This HTTP method is not supported. Only GET, POST, PUT, and DELETE are supported."});
