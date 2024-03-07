@@ -88,6 +88,15 @@ router.post('/signin', function (req, res) {
 
 // API route to movies
 router.route('/movies')
+    .get(function (req, res) {
+        Movie.find({}, function (err, movies) {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Internal server error.'});
+            } else {
+                return res.status(200).json({ success: true, movies: movies });
+            }
+        });
+    })
     .post(authJwtController.isAuthenticated, function (req, res) {
         if (!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             return res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
@@ -141,18 +150,6 @@ router.route('/movies')
                 }
             });
         }
-    })
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        Movie.find({}, (err, movies) => {
-            if (err) {
-                return res.status(403).json({success: false, message: "Unable to retrieve movie titles."});
-            }
-            if (movies && movies.length > 0) {
-                return res.status(200).json({success: true, message: "Successfully retrieved movies.", movies: movies});
-            } else {
-                return res.status(404).json({success: false, message: "Unable to retrieve a match for movie titles."});
-            }
-        })
     })
     .all(function(req, res) {
         return res.status(403).json({success: false, message: "This HTTP method is not supported. Only GET, POST, PUT, and DELETE are supported."});
