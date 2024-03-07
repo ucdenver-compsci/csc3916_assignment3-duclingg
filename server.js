@@ -143,7 +143,7 @@ router.route('/movies')
         }
     })
     .get(authJwtController.isAuthenticated, function (req, res) {
-        Movie.find( req.body.find_title).select("title year_released genre actors").exec(function (err, movie) {
+        Movie.find({}, "title year_released genre actors").exec(function (err, movie) {
             if (err) {
                 return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
             }
