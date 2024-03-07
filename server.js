@@ -91,20 +91,20 @@ router.route('/movies')
     .get(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
 
-        if (!req.body.find_title) {
-            return res.json({ success: false, message: "Please provide a title to be retrieved." });
-        } else {
-            Movie.find( req.body.find_title).select("title releaseDate genre actors").exec(function (err, movie) {
-                if (err) {
-                    return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
-                }
-                if (movie && movie.length > 0) {
-                    return res.status(200).json(movie);
-                } else {
-                    return res.status(404).json({success: false, message: "Unable to retrieve a match for title passed in."});
-                }
-            })
+        const { title } = req.query;
+        let query = {};
+
+        if (title) {
+            query.title = title;
         }
+
+        Movie.find(query).select("title releaseDate genre actors").exec(function (err, movies) {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Unable to find passed in title.'});
+            } else {
+                return res.status(200).json(movies);
+            }
+        });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
