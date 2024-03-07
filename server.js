@@ -88,12 +88,12 @@ router.post('/signin', function (req, res) {
 
 // API route to movies
 router.route('/movies')
-    .get(function (req, res) {
+    .get(authJwtController, function (req, res) {
         Movie.find({}, function (err, movies) {
             if (err) {
                 return res.status(500).json({ success: false, message: 'Internal server error.'});
             } else {
-                return res.status(200).json({ success: true, movies: movies });
+                return res.json(movies);
             }
         });
     })
