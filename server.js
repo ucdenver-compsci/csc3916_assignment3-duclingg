@@ -89,15 +89,19 @@ router.post('/signin', function (req, res) {
 // API route to movies
 router.route('/movies')
     .get(function (req, res) {
-        Movie.find({}, "title releaseDate genre actors").exec(function (err, movies) {
+        console.log(req.body);
+
+        Movie.find(function (err, movies) {
             if (err) {
-                return res.status(500).json({ success: false, message: 'Internal server error.'});
+                return res.status(500).send(err);
             } else {
-                return res.json(movies);
+                return res.status(200).json(movies);
             }
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
+        console.log(req.body);
+
         if (!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             return res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
         } else {
@@ -122,6 +126,8 @@ router.route('/movies')
         }
     })
     .put(authJwtController.isAuthenticated, function (req, res) {
+        console.log(req.body);
+
         if (!req.body.find_title || !req.body.update_title) {
             return res.json({ success: false, message: "Please provide a title to be updated as well as the new updated title."});
         } else {
@@ -137,6 +143,8 @@ router.route('/movies')
         }
     })
     .delete(authJwtController.isAuthenticated, function (req, res) {
+        console.log(req.body);
+
         if (!req.body.find_title) {
             return res.json({ success: false, message: "Please provide a title to delete." });
         } else {
