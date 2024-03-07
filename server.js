@@ -96,7 +96,7 @@ router.route('/movies')
                 return res.status(500).send({success: false, message: 'Internal server error.'});
             }
 
-            res.status(200).json({success: true, movies: movies});
+            res.status(200).json(movies);
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
