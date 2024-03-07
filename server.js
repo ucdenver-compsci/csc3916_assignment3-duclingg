@@ -88,16 +88,21 @@ router.post('/signin', function (req, res) {
 
 // API route to movies
 router.route('/movies')
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        console.log(req.body);
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        var movieTitle = req.query.title;
+        console.log(movieTitle);
 
-        Movie.find({}, 'title releaseDate genre actors', function(err, movies) {
-            if (err) {
-                return res.status(500).send({success: false, message: 'Internal server error.'});
+        Movie.findOne({title: movieTitle}).exec(function (err, movie) {
+            if (err) res.send(err);
+
+            console.log(movie);
+            
+            if (movie == null) {
+                res.status(400).send('No movie found.');
+            } else {
+                res.status(200).json(movie);
             }
-
-            res.status(200).json(movies);
-        });
+        })
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
