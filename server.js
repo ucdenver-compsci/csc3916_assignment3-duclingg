@@ -89,7 +89,7 @@ router.post('/signin', function (req, res) {
 // API route to movies
 router.route('/movies')
     .get(function (req, res) {
-        Movie.find({}, "title year_released genre actors").exec(function (err, movies) {
+        Movie.find({}, "title releaseDate genre actors").exec(function (err, movies) {
             if (err) {
                 return res.status(500).json({ success: false, message: 'Internal server error.'});
             } else {
