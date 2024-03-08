@@ -102,7 +102,7 @@ router.route('/movies')
                 return res.status(404).send('Movie not found.');
             }
 
-            return res.status(200).json({ success: true, movie: movie});
+            return res.status(200).json([movie]);
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
