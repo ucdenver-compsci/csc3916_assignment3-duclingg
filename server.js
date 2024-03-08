@@ -92,10 +92,6 @@ router.route('/movies')
         console.log(req.body);
 
         var movieTitle = req.query.title;
-        
-        if (!movieTitle) {
-            return res.status(400).send('Movie title is required.');
-        }
 
         Movie.findOne({ title: movieTitle }).exec(function (err, movie) {
             if (err) {
