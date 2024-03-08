@@ -90,7 +90,7 @@ router.post('/signin', function (req, res) {
 router.route('/movies')
     .get(authJwtController.isAuthenticated, function(req, res) {
         console.log(req.body);
-        
+
         var movieTitle = req.query.title;
         
         if (!movieTitle) {
@@ -106,7 +106,7 @@ router.route('/movies')
                 return res.status(404).send('Movie not found.');
             }
 
-            return res.status(200).json(movie);
+            return res.status(200).json({ success: true, movie: movie});
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
