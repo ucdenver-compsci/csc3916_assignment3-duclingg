@@ -89,20 +89,25 @@ router.post('/signin', function (req, res) {
 // API route to movies
 router.route('/movies')
     .get(authJwtController.isAuthenticated, function(req, res) {
+        console.log(req.body);
+        
         var movieTitle = req.query.title;
-        console.log(movieTitle);
+        
+        if (!movieTitle) {
+            return res.status(400).send('Movie title is required.');
+        }
 
-        Movie.findOne({title: movieTitle}).exec(function (err, movie) {
-            if (err) res.send(err);
-
-            console.log(movie);
-            
-            if (movie == null) {
-                res.status(400).send('No movie found.');
-            } else {
-                res.status(200).json(movie);
+        Movie.findOne({ title: movieTitle }).exec(function (err, movie) {
+            if (err) {
+                return res.status(500).send(err);
             }
-        })
+
+            if (!movie) {
+                return res.status(404).send('Movie not found.');
+            }
+
+            return res.status(200).json(movie);
+        });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
