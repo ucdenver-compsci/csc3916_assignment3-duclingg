@@ -88,21 +88,18 @@ router.post('/signin', function (req, res) {
 
 // API route to movies
 router.route('/movies')
-    .get(authJwtController.isAuthenticated, function(req, res) {
-        console.log(req.body);
-
-        var movieTitle = req.query.title;
-
-        Movie.findOne({ title: movieTitle }).exec(function (err, movie) {
+    .get((req, res) => {
+        Movie.find({
+            title: { $exists: true, $ne: null },
+            releaseDate: { $exists: true, $ne: null },
+            genre: { $exists: true, $ne: null },
+            actors: { $exists: true, $ne: null }
+        }, (err, movies) => {
             if (err) {
-                return res.status(500).send(err);
+                res.status(400).send(err);
+            } else {
+                res.status(200).json(movies);
             }
-
-            if (!movie) {
-                return res.status(404).send('Movie not found.');
-            }
-
-            return res.status(200).json([movie]);
         });
     })
     .post(authJwtController.isAuthenticated, function (req, res) {
