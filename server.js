@@ -88,7 +88,7 @@ router.post('/signin', function (req, res) {
 
 // API route to movies
 router.route('/movies')
-    .get((req, res) => {
+    .get(authJwtController.isAuthenticated, function (req, res) {
         Movie.find({
             title: { $exists: true, $ne: null },
             releaseDate: { $exists: true, $ne: null },
