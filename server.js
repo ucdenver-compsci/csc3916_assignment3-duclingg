@@ -106,7 +106,7 @@ router.route('/movies')
         console.log(req.body);
 
         if (!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
-            return res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
+            return res.status(500).json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
         }
 
         Movie.findOne({ title: req.body.title }, (err, movie) => {
@@ -134,7 +134,7 @@ router.route('/movies')
         console.log(req.body);
 
         if (!req.body.find_title || !req.body.update_title) {
-            return res.json({ success: false, message: "Please provide a title to be updated as well as the new updated title."});
+            return res.status(500).json({ success: false, message: "Please provide a title to be updated as well as the new updated title."});
         } else {
             Movie.findOneAndUpdate( req.body.find_title, req.body.update_title, function (err, movie) {
                 if (err) {
@@ -151,7 +151,7 @@ router.route('/movies')
         console.log(req.body);
 
         if (!req.body.find_title) {
-            return res.json({ success: false, message: "Please provide a title to delete." });
+            return res.status(500).json({ success: false, message: "Please provide a title to delete." });
         } else {
             Movie.findOneAndDelete( req.body.find_title, function (err, movie) {
                 if (err) {
