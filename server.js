@@ -107,26 +107,28 @@ router.route('/movies')
 
         if (!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             return res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
-        } else {
-            var movie = new Movie();
+        }
 
-            movie.title = req.body.title;
-            movie.releaseDate = req.body.releaseDate;
-            movie.genre = req.body.genre;
-            movie.actors = req.body.actors;
+        Movie.findOne({ title: req.body.title }, (err, existingMovie) => {
+            if (existingMovie) {
+                return res.status(400).json({ success: false, message: "That movie already exists." });
+            }
+
+            var movie = new Movie({
+                title : req.body.title,
+                releaseDate : req.body.releaseDate,
+                genre : req.body.genre,
+                actors : req.body.actors
+            });
 
             movie.save(function (err) {
                 if (err) {
-                    if (err.code === 11000) {
-                        return res.json({ success: false, message: "That movie already exists."});
-                    } else {
-                        return res.send(err);
-                    }
+                    return res.status(500).json({ success: false, message: "Failed to create movie." });
                 } else {
                     return res.status(200).send({success: true, message: "Successfully created movie."});
                 }
             });
-        }
+        });
     })
     .put(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
